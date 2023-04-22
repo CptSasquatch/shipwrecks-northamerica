@@ -9,7 +9,7 @@ function getIcon(wreckType) {
     switch (wreckType) {
         case "Not Charted":
             wreckIcon = L.icon({
-                iconUrl: "../static/images/marker_uncharted.svg",
+                iconUrl: "/static/images/marker_uncharted.svg",
                 iconSize: [70, 70],
                 iconAnchor: [35, 70],
                 popupAnchor: [0, -70]
@@ -17,7 +17,7 @@ function getIcon(wreckType) {
             return wreckIcon;
         case "Wreck - Submerged, dangerous to surface navigation":
             wreckIcon = L.icon({
-                iconUrl: "../static/images/marker_danger.svg",
+                iconUrl: "/static/images/marker_danger.svg",
                 iconSize: [70, 70],
                 iconAnchor: [35, 70],
                 popupAnchor: [0, -70]
@@ -25,7 +25,7 @@ function getIcon(wreckType) {
             return wreckIcon;
         case "Wreck - Submerged, nondangerous":
             wreckIcon = L.icon({
-                iconUrl: "../static/images/marker_safe.svg",
+                iconUrl: "/static/images/marker_safe.svg",
                 iconSize: [70, 70],
                 iconAnchor: [35, 70],
                 popupAnchor: [0, -70]
@@ -33,7 +33,7 @@ function getIcon(wreckType) {
             return wreckIcon;
         case "Wreck - Visible":
             wreckIcon = L.icon({
-                iconUrl: "../static/images/marker_vis.svg",
+                iconUrl: "/static/images/marker_vis.svg",
                 iconSize: [70, 70],
                 iconAnchor: [35, 70],
                 popupAnchor: [0, -70]
@@ -127,7 +127,7 @@ L.control.mousePosition().addTo(map);
 // create a function to add a heatmap layer to the map
 function createHeatmap() {
     // import the data from the json file
-    d3.json("../static/data/shipwreck.json").then(function (wreckData) {
+    d3.json("/static/data/shipwreck.json").then(function (wreckData) {
         // create a variable that is an array of the lat and long of the shipwrecks
         let wreckLocations = wreckData.map(wreck => [wreck.lat, wreck.lng]);
         // create a variable that is a heat layer with the wreck locations
@@ -169,7 +169,7 @@ setNumWrecks();
 // create a function that produces a map that shows a random selection of specified number of shipwrecks
 function createMap() {
     // import the data from the json file
-    d3.json("../static/data/shipwreck.json").then(function (wreckData) {
+    d3.json("/static/data/shipwreck.json").then(function (wreckData) {
         // create a variable that is a random number between 0 and the length of the wreck data minus variable value
         let randNum = wreckData.sort(function () { return 0.5 - Math.random() }).slice(0, numWrecks);
         // create a layer group for the wrecks
@@ -208,7 +208,7 @@ function createMap() {
 // create a function that adds markers for all the shipwrecks of a specified type
 function addWrecks(type) {
     // create a variable that uses the endpoint to get the data for the specified wreck type
-    let wreckUrl = "../static/data/shipwreck.json";
+    let wreckUrl = "/static/data/shipwreck.json";
     // import the data from the json file
     d3.json(wreckUrl).then(function (wreckData) {
         // filter the data to only include the specified wreck type
