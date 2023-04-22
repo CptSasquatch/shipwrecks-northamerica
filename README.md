@@ -15,5 +15,3 @@ The data was downloaded as a CSV file and cleaned and converted to JSON using th
 - [ ] Add a search bar to filter the data
 - [ ] Add a legend
 - [ ] Add a dropdown menu to filter the data for the heatmap
-
-
