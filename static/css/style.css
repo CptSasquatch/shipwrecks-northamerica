@@ -1,0 +1,57 @@
+body {
+    padding: 0;
+    margin: 0;
+  }
+  
+  #map,
+  body,
+  html {
+    height: 100%;
+  }
+div.leaflet-control-mouseposition.leaflet-control {
+  color: white;
+}
+div.splash-screen {
+  position: center;
+  top: 0;
+  left: 0;
+  width: 600px;
+  height: 100%;
+  background-color: #fff;
+  opacity: 85%;
+  border-radius: 10px;
+  border-color: #828282;
+  border-style: solid;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+div.splash-screen h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+}
+div.splash-screen p {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+  text-align: center;
+}
+div.splash-screen button {
+  width: 23px;
+  height: 23px;
+  justify-content: center;
+  background-color: #000;
+  color: #fff;
+  border-radius: 3px;
+  border-color: #828282;
+  border-style: solid;
+  font-size: auto;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
