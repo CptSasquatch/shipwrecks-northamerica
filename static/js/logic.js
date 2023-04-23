@@ -78,12 +78,12 @@ let visible = new L.LayerGroup();
 let overlayMaps = {
     "All Wrecks": allwrecks,
     "Not Charted": uncharted,
-    "Wreck - Submerged, dangerous to surface navigation": danger,
-    "Wreck - Submerged, nondangerous": safe,
-    "Wreck - Visible": visible
+    "Submerged, dangerous": danger,
+    "Submerged, nondangerous": safe,
+    "Visible": visible
 };
 // add the layer control to the map
-L.control.layers(baseMaps, overlayMaps).addTo(map);
+L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
 // only one heatmap can be selected at a time
 let inputs = document.getElementsByClassName('leaflet-control-layers-selector');
 inputs[3].onclick = function() {
@@ -311,6 +311,7 @@ function createMap() {
             let wreckMarker = L.marker([wreck.lat, wreck.lng], {icon:wreckIcon}).bindPopup(`<h3>Name: ${wreck.name}</h3><hr><p>Type: ${wreck.type}<br><br>History: ${wreck.history}</p>`);
             // add the marker to the map
             wreckMarker.addTo(map);
+            deleteButton.addTo(map);
         });
     });
 }
@@ -489,6 +490,22 @@ let wreckButton4 = L.easyButton({
     }]
 });
 wreckButton4.addTo(map);
+// add a button to remove all of the shipwreck markers
+let deleteButton = L.easyButton({
+    states: [{
+        stateName: 'remove-wrecks',
+        icon: 'fa-trash',
+        title: 'Remove Shipwrecks',
+        onClick: function (btn, map) {
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+        deleteButton.removeFrom(map);
+        }
+    }]
+});
 // add a splash screen that will appear when the page is loaded
 let splash = L.easyButton({
     states: [{
