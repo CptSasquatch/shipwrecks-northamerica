@@ -68,8 +68,135 @@ let baseMaps = {
     "Street": street,
     "Black": black
 };
-// create the layer control
-L.control.layers(baseMaps).addTo(map);
+// create heatmap variables
+let allwrecks = new L.LayerGroup();
+let uncharted = new L.LayerGroup();
+let danger = new L.LayerGroup();
+let safe = new L.LayerGroup();
+let visible = new L.LayerGroup();
+// declare the overlay object to hold the heatmap layers
+let overlayMaps = {
+    "All Wrecks": allwrecks,
+    "Not Charted": uncharted,
+    "Wreck - Submerged, dangerous to surface navigation": danger,
+    "Wreck - Submerged, nondangerous": safe,
+    "Wreck - Visible": visible
+};
+// add the layer control to the map
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+// only one heatmap can be selected at a time
+let inputs = document.getElementsByClassName('leaflet-control-layers-selector');
+inputs[3].onclick = function() {
+    inputs[4].checked = false;
+    inputs[5].checked = false;
+    inputs[6].checked = false;
+    inputs[7].checked = false;
+    uncharted.clearLayers();
+    danger.clearLayers();
+    safe.clearLayers();
+    visible.clearLayers();
+    // get the data for each heatmap and it to the layer groups
+    d3.json("static/data/shipwreck.json").then(function(data) {
+        // create a variable the holds the lat and long of each wreck
+        let wreckLoc = data.map(wreck => [wreck.lat, wreck.lng]);
+        allwrecks.addLayer(L.heatLayer(wreckLoc, {
+            radius: 20,
+            blur: 25,
+            useLocalExtrema: true,
+            minOpacity: 0.5
+            }));
+    });
+};
+inputs[4].onclick = function() {
+    inputs[3].checked = false;
+    inputs[5].checked = false;
+    inputs[6].checked = false;
+    inputs[7].checked = false;
+    allwrecks.clearLayers();
+    danger.clearLayers();
+    safe.clearLayers();
+    visible.clearLayers();
+    // filter the data for uncharted wrecks
+    d3.json("static/data/shipwreck.json").then(function(data) {
+        // create a variable the holds the lat and long of each wreck
+        let unchartedWrecks = data.filter(wreck => wreck.type === "Not Charted");
+        let unchartedLoc = unchartedWrecks.map(wreck => [wreck.lat, wreck.lng]);
+        uncharted.addLayer(L.heatLayer(unchartedLoc, {
+            radius: 20,
+            blur: 25,
+            useLocalExtrema: true,
+            minOpacity: 0.5
+            }));
+    });
+};
+inputs[5].onclick = function() {
+    inputs[3].checked = false;
+    inputs[4].checked = false;
+    inputs[6].checked = false;
+    inputs[7].checked = false;
+    allwrecks.clearLayers();
+    uncharted.clearLayers();
+    safe.clearLayers();
+    visible.clearLayers();
+    // filter the data for dangerous wrecks
+    d3.json("static/data/shipwreck.json").then(function(data) {
+        // create a variable the holds the lat and long of each wreck
+        let dangerWrecks = data.filter(wreck => wreck.type === "Wreck - Submerged, dangerous to surface navigation");
+        let dangerLoc = dangerWrecks.map(wreck => [wreck.lat, wreck.lng]);
+        danger.addLayer(L.heatLayer(dangerLoc, {
+            radius: 20,
+            blur: 25,
+            useLocalExtrema: true,
+            minOpacity: 0.5
+            }));
+    });
+};
+inputs[6].onclick = function() {
+    inputs[3].checked = false;
+    inputs[4].checked = false;
+    inputs[5].checked = false;
+    inputs[7].checked = false;
+    allwrecks.clearLayers();
+    uncharted.clearLayers();
+    danger.clearLayers();
+    visible.clearLayers();
+    // filter the data for safe wrecks
+    d3.json("static/data/shipwreck.json").then(function(data) {
+        // create a variable the holds the lat and long of each wreck
+        let safeWrecks = data.filter(wreck => wreck.type === "Wreck - Submerged, nondangerous");
+        let safeLoc = safeWrecks.map(wreck => [wreck.lat, wreck.lng]);
+        safe.addLayer(L.heatLayer(safeLoc, {
+            radius: 20,
+            blur: 25,
+            useLocalExtrema: true,
+            minOpacity: 0.5
+            }));
+    });
+};
+inputs[7].onclick = function() {
+    inputs[3].checked = false;
+    inputs[4].checked = false;
+    inputs[5].checked = false;
+    inputs[6].checked = false;
+    allwrecks.clearLayers();
+    uncharted.clearLayers();
+    danger.clearLayers();
+    safe.clearLayers();
+    // filter the data for visible wrecks
+    d3.json("static/data/shipwreck.json").then(function(data) {
+        // create a variable the holds the lat and long of each wreck
+        let visibleWrecks = data.filter(wreck => wreck.type === "Wreck - Visible");
+        let visibleLoc = visibleWrecks.map(wreck => [wreck.lat, wreck.lng]);
+        visible.addLayer(L.heatLayer(visibleLoc, {
+            radius: 20,
+            blur: 25,
+            useLocalExtrema: true,
+            minOpacity: 0.5
+            }));
+    });
+};
+
+
 // add scale to the map
 L.control.scale().addTo(map);
 // add mouse position to the map
@@ -123,24 +250,6 @@ L.Control.MousePosition = L.Control.extend({
       return new L.Control.MousePosition(options);
   };
 L.control.mousePosition().addTo(map);
-
-// create a function to add a heatmap layer to the map
-function createHeatmap() {
-    // import the data from the json file
-    d3.json("static/data/shipwreck.json").then(function (wreckData) {
-        // create a variable that is an array of the lat and long of the shipwrecks
-        let wreckLocations = wreckData.map(wreck => [wreck.lat, wreck.lng]);
-        // create a variable that is a heat layer with the wreck locations
-        let heat = L.heatLayer(wreckLocations, {
-            radius: 20,
-            blur: 25,
-            useLocalExtrema: true,
-            minOpacity: 0.5
-        });
-        // add the heat layer to the map
-        heat.addTo(map);
-    });
-}
 // create an array to populate the dropdown menu
 var amounts = ['--Select Amount--', 50, 200, 350, 500, 650, 800, 950, 1100, 1350, 1500];
 // create a function to set number of wrecks to display
@@ -260,36 +369,6 @@ let button = L.easyButton({
     }]
 });
 button.addTo(map);
-// add a button to reveal the heatmap
-let heatmapButton = L.easyButton({
-    // make the background of the button green when user hovers over it
-    buttonStyle: {
-        'background-color': 'green'
-    },
-    states: [{
-        stateName: 'add-heatmap',
-        icon: 'fa-pepper-hot',
-        title: 'Add Heatmap',
-        onClick: function (btn, map) {
-            createHeatmap();
-            btn.state('remove-heatmap');
-        }
-    },
-    {
-        stateName: 'remove-heatmap',
-        icon: 'fa-trash',
-        title: 'Remove Heatmap',
-        onClick: function (btn, map) {
-            map.eachLayer(function (layer) {
-                if (layer instanceof L.HeatLayer) {
-                    map.removeLayer(layer);
-                }
-            });
-            btn.state('add-heatmap');
-        }
-    }]
-});
-heatmapButton.addTo(map);
 // add a button to add markers for all the visible shipwrecks
 let wreckButton1 = L.easyButton({
     states: [{
@@ -439,7 +518,7 @@ function splashScreen() {
     });
     splashyScreen.onAdd = function (map) {
         let div = L.DomUtil.create('div', 'splash-screen');
-        div.innerHTML = "<div><button class='x-button'>X</button><h1>Shipwreck Map</h1><p>Map showing the location of shipwrecks in North America.</p><ul><li>Add/remove the shipwrecks by clicking on the buttons in the top left corner of the map.</li><li>Zoom in/out by using the buttons in the top left corner of the map.</li><li>Move the map by clicking and dragging the map.</li><li>Click on the markers to see info about the shipwreck.</li><li>Add/remove the heatmap by clicking on the button in the top left corner of the map.</li><li>Click anywhere on the map and a marker will be added to the map of the shipwreck closest to the location clicked.</li></ul></div>";
+        div.innerHTML = "<div><button class='x-button'>X</button><h1>Shipwreck Map</h1><p>Map showing the location of shipwrecks in North America.</p><ul><li>Add/remove the shipwrecks by clicking on the buttons in the top left corner of the map.</li><li>Zoom in/out by using the buttons in the top left corner of the map.</li><li>Move the map by clicking and dragging the map.</li><li>Click on the markers to see info about the shipwreck.</li><li>Add a heatmap by using the checkboxes in the layer controls at the top right corner.</li><li>Click anywhere on the map and a marker will be added to the map of the shipwreck closest to the location clicked.</li></ul></div>";
         // add an x button to remove the splash screen
         let xButton = div.getElementsByClassName("x-button")[0];
         splash.state('remove-splash');
