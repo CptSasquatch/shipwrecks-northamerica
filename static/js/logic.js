@@ -91,6 +91,7 @@ inputs[3].onclick = function() {
     inputs[5].checked = false;
     inputs[6].checked = false;
     inputs[7].checked = false;
+    allwrecks.clearLayers();
     uncharted.clearLayers();
     danger.clearLayers();
     safe.clearLayers();
@@ -112,6 +113,7 @@ inputs[4].onclick = function() {
     inputs[5].checked = false;
     inputs[6].checked = false;
     inputs[7].checked = false;
+    uncharted.clearLayers();
     allwrecks.clearLayers();
     danger.clearLayers();
     safe.clearLayers();
@@ -134,6 +136,7 @@ inputs[5].onclick = function() {
     inputs[4].checked = false;
     inputs[6].checked = false;
     inputs[7].checked = false;
+    danger.clearLayers();
     allwrecks.clearLayers();
     uncharted.clearLayers();
     safe.clearLayers();
@@ -156,6 +159,7 @@ inputs[6].onclick = function() {
     inputs[4].checked = false;
     inputs[5].checked = false;
     inputs[7].checked = false;
+    safe.clearLayers();
     allwrecks.clearLayers();
     uncharted.clearLayers();
     danger.clearLayers();
@@ -178,6 +182,7 @@ inputs[7].onclick = function() {
     inputs[4].checked = false;
     inputs[5].checked = false;
     inputs[6].checked = false;
+    visible.clearLayers();
     allwrecks.clearLayers();
     uncharted.clearLayers();
     danger.clearLayers();
@@ -534,8 +539,26 @@ function splashScreen() {
         position: 'topleft'
     });
     splashyScreen.onAdd = function (map) {
+        options = {
+            position: 'topleft',
+            maxWidth: '500',
+            maxHeight: '500'
+        }
         let div = L.DomUtil.create('div', 'splash-screen');
-        div.innerHTML = "<div><button class='x-button'>X</button><h1>Shipwreck Map</h1><p>Map showing the location of shipwrecks in North America.</p><ul><li>Add/remove the shipwrecks by clicking on the buttons in the top left corner of the map.</li><li>Zoom in/out by using the buttons in the top left corner of the map.</li><li>Move the map by clicking and dragging the map.</li><li>Click on the markers to see info about the shipwreck.</li><li>Add a heatmap by using the checkboxes in the layer controls at the top right corner.</li><li>Click anywhere on the map and a marker will be added to the map of the shipwreck closest to the location clicked.</li></ul></div>";
+        let splashContent = `<div>
+        <button class='x-button'>X</button>
+        <h1>Shipwreck Map</h1>
+        <h2>Map showing the location of shipwrecks in North America.</h2>
+        <p>Click on the buttons to add markers for different types of shipwrecks.</p>
+        <ul>
+        <li><strong>Random Shipwrecks</strong> - Adds markers for a random selection of shipwrecks.</li>
+        <li><strong>Visible Shipwrecks</strong> - Adds markers for shipwrecks that are visible above the water.</li>
+        <li><strong>Submerged, Dangerous Shipwrecks</strong> - Adds markers for submerged shipwrecks that are dangerous to surface navigation.</li>
+        <li><strong>Submerged, Nondangerous Shipwrecks</strong> - Adds markers for submerged shipwrecks that are not dangerous to surface navigation.</li>
+        <li><strong>Uncharted Shipwrecks</strong> - Adds markers for shipwrecks that are not charted.</li>
+        </ul>
+        </div>`;
+        div.innerHTML = splashContent;
         // add an x button to remove the splash screen
         let xButton = div.getElementsByClassName("x-button")[0];
         splash.state('remove-splash');
@@ -543,6 +566,7 @@ function splashScreen() {
             removeSplash();
             splash.state('splash');
         }
+        // add options to the splash screen
 
         return div;
     }
