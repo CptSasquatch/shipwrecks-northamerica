@@ -368,12 +368,23 @@ function addWrecksByHistory(text) {
         console.log(`Added ${wreckData.length} shipwrecks with "${text}" in the history`);
     });
 }
-// add leaflet-search plugin to the map
-let searchControl = new L.layerGroup().addTo(map);
-map.addControl( new L.Control.Search({
-    layer: searchControl
-}) );
-
+// add imput field to the map that will call the addWrecksByHistory function
+let input = L.control({position: 'bottomright'});
+input.onAdd = function (map) {
+    let div = L.DomUtil.create('div', 'input');
+    div.innerHTML = '<form><input type="text" id="input" placeholder="Search by History"></form>';
+    // add a button to the right of the input field that will call the addWrecksByHistory function
+    let search = L.DomUtil.create('button', 'button', div);
+    search.innerHTML = 'Search';
+    search.onclick = function () {
+        // get the text from the input field
+        let text = document.getElementById('input').value;
+        // call the addWrecksByHistory function
+        addWrecksByHistory(text);
+    };
+    return div;
+};
+input.addTo(map);
 // add a button to the map that will call the createMap function
 let button = L.easyButton({
     states: [
