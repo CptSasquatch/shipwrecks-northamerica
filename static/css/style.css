@@ -60,3 +60,16 @@ div.splash-screen button {
   top: 10px;
   right: 10px;
 }
+div.leaflet-control h4 {
+  font-size: 18px;
+  font-weight: 700;
+}
+div.leaflet-bar.leaflet-control {
+  background-color: #c4fcde;
+  border-radius: 5px;
+  border-color: #828282;
+  border-style: solid;
+  border-width: 1px;
+  padding: 5px;
+  margin: 5px;
+}

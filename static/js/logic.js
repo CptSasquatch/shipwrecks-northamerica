@@ -83,7 +83,7 @@ let overlayMaps = {
     "Visible": visible
 };
 // add the layer control to the map
-L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
+L.control.layers(baseMaps, overlayMaps, {collapsed: true}).addTo(map);
 // only one heatmap can be selected at a time
 let inputs = document.getElementsByClassName('leaflet-control-layers-selector');
 inputs[3].onclick = function() {
@@ -322,7 +322,7 @@ function createMap() {
 }
 // create a function that adds markers for all the shipwrecks of a specified type
 function addWrecks(type) {
-    // create a variable that uses the endpoint to get the data for the specified wreck type
+    // create a variable for the url of the json file
     let wreckUrl = "static/data/shipwreck.json";
     // import the data from the json file
     d3.json(wreckUrl).then(function (wreckData) {
@@ -344,6 +344,36 @@ function addWrecks(type) {
         console.log(`Added ${wreckData.length} "${type}" shipwrecks`);
     });
 }
+// create a function that will add markers to the map for wrecks containing the specified text in the history
+function addWrecksByHistory(text) {
+    // create a variable for the url of the json file
+    let wreckUrl = "static/data/shipwreck.json";
+    // import the data from the json file
+    d3.json(wreckUrl).then(function (wreckData) {
+        // filter the data to only include the wrecks that contain the specified text in the history
+        wreckData = wreckData.filter(wreck => wreck.history.includes(text));
+        // create a layer group for the wrecks
+        let wrecks = L.layerGroup();
+        // loop through the wreck locations and add a marker to the layer group
+        wreckData.forEach(function (location) {
+            // call the getIcon function to get the correct icon for the wreck type
+            wreckIcon = getIcon(location.type);
+            // add a marker to the layer group
+            wrecks.addLayer(L.marker(location, {icon:wreckIcon}).bindPopup(`<h3>Name: ${location.name}</h3><hr><p>Type: ${location.type}<br><br>History: ${location.history}</p>`));
+        }
+        );
+        // add the layer group to the map
+        wrecks.addTo(map);
+        // console log the number of wrecks added
+        console.log(`Added ${wreckData.length} shipwrecks with "${text}" in the history`);
+    });
+}
+// add leaflet-search plugin to the map
+let searchControl = new L.layerGroup().addTo(map);
+map.addControl( new L.Control.Search({
+    layer: searchControl
+}) );
+
 // add a button to the map that will call the createMap function
 let button = L.easyButton({
     states: [
@@ -579,4 +609,9 @@ function removeSplash() {
     // remove the splash screen
     splashyScreen.remove();
 }
+// select div by class "leaflet-control-layers-separator" and insert a new div after it
+let newDiv = document.createElement("div");
+newDiv.innerHTML = "<h4>Select Heat Map</h4>";
+let parentDiv = document.getElementsByClassName("leaflet-control-layers-separator")[0].parentNode;
+parentDiv.insertBefore(newDiv, parentDiv.childNodes[2]);
 // splashScreen();
