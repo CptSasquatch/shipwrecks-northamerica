@@ -377,8 +377,8 @@ input.onAdd = function (map) {
     let search = L.DomUtil.create('button', 'button', div);
     search.innerHTML = 'Search';
     search.onclick = function () {
-        // get the text from the input field
-        let text = document.getElementById('input').value;
+        // get the text from the input field removing case sensitivity
+        let text = document.getElementById('input').value.toUpperCase();
         // call the addWrecksByHistory function
         addWrecksByHistory(text);
     };
