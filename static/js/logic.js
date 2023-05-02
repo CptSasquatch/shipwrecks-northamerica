@@ -379,6 +379,12 @@ input.onAdd = function (map) {
     search.onclick = function () {
         // get the text from the input field removing case sensitivity
         let text = document.getElementById('input').value.toUpperCase();
+        // remove the wrecks from the map
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
+        });
         // call the addWrecksByHistory function
         addWrecksByHistory(text);
     };
